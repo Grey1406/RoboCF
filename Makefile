@@ -1,5 +1,11 @@
 install:
-	php composer.phar install
+	docker run --rm -v $(pwd):/app composer/composer install
+	cp .env_example .env
+	docker-compose exec robocf_app_1 php artisan key:generate
+	docker-compose exec robocf_app_1 php artisan optimize
+	sudo chmod -R 777 storage && sudo chmod -R 777 bootstrap/cache
+	docker-compose exec app php artisan migrate --seed
+	cp .env_example .env
 docker-up:
 	 docker-compose up --build -d
 docker-down:
