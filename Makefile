@@ -1,11 +1,11 @@
 install:
 	composer install
-	cp .env_example .env
-	docker-compose exec robocf_app_1 php artisan key:generate
-	docker-compose exec robocf_app_1 php artisan optimize
+	cp .env.example .env
 	sudo chmod -R 777 storage && sudo chmod -R 777 bootstrap/cache
+	docker-compose exec app php artisan key:generate
+	docker-compose exec app php artisan optimize
 	docker-compose exec app php artisan migrate --seed
-	cp .env_example .env
+	make laravel-refresh
 docker-up:
 	 docker-compose up --build -d
 docker-down:
