@@ -26,6 +26,7 @@ class CashFlow extends Model
         $cashFlow->changed = null;
         $cashFlow->approved = $datetime;
         $cashFlow->save();
+        return $cashFlow;
     }
 
     static public function ApproveWaiting($datetime)
@@ -41,5 +42,12 @@ class CashFlow extends Model
             Customer::ChangeBalance($cashFlow->id_receiver,$cashFlow->amount);
             $cashFlow->save();
         }
+    }
+
+    static public function GetCustomerCashFlow($id)
+    {
+        return $cashFlows = CashFlow::where('id_sender', $id)
+            ->get();
+
     }
 }

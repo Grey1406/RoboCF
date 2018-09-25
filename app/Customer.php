@@ -23,6 +23,8 @@ class Customer extends Model
         return $Customer;
     }
 
+//* * * * * php /home/sergey/RoboCf make laravel-approve >> /dev/null 2>&1
+
     static public function GetAllCustomers()
     {
 //        CashFlow::ApproveWaiting(Carbon::now());
@@ -54,8 +56,12 @@ class Customer extends Model
 
     static public function GetCustomerBalance($id)
     {
-        return $Customer = Customer::where('id', $id)
+        $balance=$Customer = Customer::where('id', $id)
             ->first()->balance;
+        $cashFlows = CashFlow::GetCustomerCashFlow($id);
+        foreach ($cashFlows as $cashFlow)
+            $balance-=$cashFlow->amount;
+        return $balance;
     }
     static public function ChangeBalance($id,$amount)
     {
