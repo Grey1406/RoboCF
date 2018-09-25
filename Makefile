@@ -1,5 +1,5 @@
 install:
-	docker run --rm -v $(pwd):/app composer/composer install
+	composer install
 	cp .env_example .env
 	docker-compose exec robocf_app_1 php artisan key:generate
 	docker-compose exec robocf_app_1 php artisan optimize
