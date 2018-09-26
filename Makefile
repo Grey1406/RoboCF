@@ -11,6 +11,7 @@ docker-up:
 docker-down:
 	 docker-compose down
 laravel-refresh:
+	 composer dump-autoload
 	 docker exec robocf_app_1 php artisan migrate:refresh --seed
 laravel-approve:
 	 docker exec robocf_app_1 php artisan schedule:run
