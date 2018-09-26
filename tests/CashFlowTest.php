@@ -24,35 +24,35 @@ class CashFlowTest extends TestCase
 
     public function testCreateNewCustomer()
     {
-        Customer::CreateNewCustomer('test1', 1000);
+        Customer::createNewCustomer('test1', 1000);
         $this->seeInDatabase('Customers', ['name' => 'test1']);
     }
 
     public function testGetCustomerBalance()
     {
-        $cus = Customer::CreateNewCustomer('test1', 1000);
+        $cus = Customer::createNewCustomer('test1', 1000);
         $this->assertEquals($cus->balance, 1000);
     }
 
     public function testChangeCustomerBalance()
     {
-        $cus = Customer::CreateNewCustomer('test1', 1000);
-        Customer::ChangeBalance($cus->id, 1277);
+        $cus = Customer::createNewCustomer('test1', 1000);
+        Customer::changeBalance($cus->id, 1277);
         $this->seeInDatabase('Customers', ['id' => $cus->id, 'balance' => 2277]);
     }
     public function testCreateNewCashFlow()
     {
-        $cus1 = Customer::CreateNewCustomer('test1', 1000);
-        $cus2 = Customer::CreateNewCustomer('test2', 1000);
-        $cashFlow=CashFlow::CreateNewCashFlow($cus1->id,$cus2->id,100,Carbon::now());
+        $cus1 = Customer::createNewCustomer('test1', 1000);
+        $cus2 = Customer::createNewCustomer('test2', 1000);
+        $cashFlow=CashFlow::createNewCashFlow($cus1->id,$cus2->id,100,Carbon::now());
         $this->seeInDatabase('CashFlows', ['id' => $cashFlow->id,'status'=>'waiting']);
     }
     public function testApproveWaiting()
     {
-        $cus1 = Customer::CreateNewCustomer('test1', 1000);
-        $cus2 = Customer::CreateNewCustomer('test2', 1000);
-        $cashFlow=CashFlow::CreateNewCashFlow($cus1->id,$cus2->id,100,Carbon::now());
-        CashFlow::ApproveWaiting(Carbon::now()->addDay());
+        $cus1 = Customer::createNewCustomer('test1', 1000);
+        $cus2 = Customer::createNewCustomer('test2', 1000);
+        $cashFlow=CashFlow::createNewCashFlow($cus1->id,$cus2->id,100,Carbon::now());
+        CashFlow::approveWaiting(Carbon::now()->addDay());
         $this->seeInDatabase('CashFlows', ['id' => $cashFlow->id,'status'=>'approved']);
     }
 

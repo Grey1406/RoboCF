@@ -14,7 +14,7 @@ class CashFlow extends Model
     static public $STATUS_WAITING = 'waiting';
     static public $STATUS_APPROVED = 'approved';
 
-    static public function CreateNewCashFlow($sender, $receiver,$amount,$datetime)
+    public static function createNewCashFlow($sender, $receiver, $amount, $datetime)
     {
         //Создание новой проводки
         $cashFlow = new CashFlow;
@@ -29,24 +29,22 @@ class CashFlow extends Model
         return $cashFlow;
     }
 
-    static public function ApproveWaiting($datetime)
+    public static function approveWaiting($datetime)
     {
         $cashFlows = CashFlow::where('status', 'waiting')
             ->where('approved', '<', $datetime)
             ->get();
-        foreach ($cashFlows as $cashFlow)
-        {
+        foreach ($cashFlows as $cashFlow) {
             $cashFlow->status = CashFlow::$STATUS_APPROVED;
             $cashFlow->changed = Carbon::now();
             $cashFlow->save();
         }
     }
 
-    static public function GetCustomerCashFlow($id)
+    public static function getCustomerCashFlow($id)
     {
         return $cashFlows = CashFlow::where('id_sender', $id)
             ->orWhere('id_receiver', $id)
             ->get();
-
     }
 }

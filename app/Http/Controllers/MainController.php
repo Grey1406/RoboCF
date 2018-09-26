@@ -14,7 +14,7 @@ class MainController extends Controller
 
     public function show()
     {
-        $customers = Customer::GetAllCustomers();
+        $customers = Customer::getAllCustomers();
 
         return view('Customers', [
             'customers' => $customers,
@@ -27,7 +27,7 @@ class MainController extends Controller
         $validator = Validator::make($request->all(), [
             'sender' => 'required|different:receiver',
             'receiver' => 'required',
-            'amount' => "required|numeric|min:1|max:".Customer::GetCustomerBalance($request->sender),
+            'amount' => "required|numeric|min:1|max:".Customer::getCustomerBalance($request->sender),
             'datetime' => 'required|date|after:now',
         ]);
 
@@ -38,7 +38,7 @@ class MainController extends Controller
         }
 
         $planedDate=Carbon::createFromFormat('Y-m-d\Th:i',$request->datetime);
-        CashFlow::CreateNewCashFlow($request->sender,$request->receiver,$request->amount,$planedDate);
+        CashFlow::createNewCashFlow($request->sender,$request->receiver,$request->amount,$planedDate);
 
         return redirect('/');
     }

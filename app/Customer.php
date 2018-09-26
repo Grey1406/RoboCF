@@ -6,13 +6,12 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-
 class Customer extends Model
 {
     protected $table = 'Customers';
     public $timestamps = false;
 
-    static public function CreateNewCustomer($name, $balance = 0)
+    public static function createNewCustomer($name, $balance = 0)
     {
         //Создание нового кастомера
         $Customer = new Customer;
@@ -24,7 +23,7 @@ class Customer extends Model
     }
 
 
-    static public function GetAllCustomers()
+    public static function getAllCustomers()
     {
 
         $Customer = DB::select("select
@@ -68,22 +67,22 @@ class Customer extends Model
         return $Customer;
     }
 
-    static public function GetCustomerBalance($id)
+    public static function getCustomerBalance($id)
     {
         $balance = $Customer = Customer::where('id', $id)
             ->first()->balance;
-        $cashFlows = CashFlow::GetCustomerCashFlow($id);
+        $cashFlows = CashFlow::getCustomerCashFlow($id);
         foreach ($cashFlows as $cashFlow) {
-            if ($cashFlow->id_sender==$id) {
+            if ($cashFlow->id_sender == $id) {
                 $balance -= $cashFlow->amount;
-            } elseif ($cashFlow->status == CashFlow::$STATUS_APPROVED){
+            } elseif ($cashFlow->status == CashFlow::$STATUS_APPROVED) {
                 $balance += $cashFlow->amount;
             }
         }
         return $balance;
     }
 
-    static public function ChangeBalance($id, $amount)
+    public static function changeBalance($id, $amount)
     {
         $Customer = Customer::where('id', $id)
             ->first();

@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function () {
-           CashFlow::ApproveWaiting(Carbon::now());
+           CashFlow::approveWaiting(Carbon::now());
         })->everyMinute();
     }
 

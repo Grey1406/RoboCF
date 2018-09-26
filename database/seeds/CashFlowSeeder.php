@@ -12,8 +12,8 @@ class CashFlowSeeder extends Seeder
      */
     public function run()
     {
-        CashFlow::CreateNewCashFlow(2,1,200,\Carbon\Carbon::now());
-        CashFlow::ApproveWaiting(\Carbon\Carbon::now()->addHour());
-        CashFlow::CreateNewCashFlow(5,1,2000,\Carbon\Carbon::now()->addMinutes(2));
+        CashFlow::createNewCashFlow(2,1,200,\Carbon\Carbon::now());
+        CashFlow::approveWaiting(\Carbon\Carbon::now()->addHour());
+        CashFlow::createNewCashFlow(5,1,2000,\Carbon\Carbon::now()->addMinutes(2));
     }
 }

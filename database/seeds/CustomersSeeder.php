@@ -17,7 +17,7 @@ class CustomersSeeder extends Seeder
         $arrayName=['Sam','Nik','Joe','Serg','Bred'];
         $arrayBalance=[0,1000,2000,5000,4000];
         for($i=0;$i<5;$i++){
-            Customer::CreateNewCustomer($arrayName[$i],$arrayBalance[$i]);
+            Customer::createNewCustomer($arrayName[$i],$arrayBalance[$i]);
         }
     }
 }
