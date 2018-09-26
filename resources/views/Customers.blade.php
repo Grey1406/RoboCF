@@ -77,7 +77,13 @@
         <form action="{{ url('cash') }}" method="POST" class="form-horizontal">
             {{ csrf_field() }}
             <div class="row">
-                <div class="col-md-1"><p>Выбор отправителя</p>
+                <div class="col-md-1"><p>Выбор отправителя</p></div>
+                <div class="col-md-1"><p>Выбор получателя</p></div>
+                <div class="col-md-1"><p>Ввод суммы</p></div>
+                <div class="col-md-1"><p>Выбор даты</p></div>
+            </div>
+            <div class="row">
+                <div class="col-md-1">
                     <select title="Выбор отправителя" name="sender">
                         @foreach ($customers as $customer)
                             @if(old('sender')==$customer->id)
@@ -88,7 +94,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-1"><p>Выбор получателя</p>
+                <div class="col-md-1">
                     <select title="Выбор отправителя" name="receiver">
                         @foreach ($customers as $customer)
                             @if(old('receiver')==$customer->id)
@@ -99,11 +105,11 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-1"><p>Ввод суммы</p>
+                <div class="col-md-1">
                     <input title="Ввод суммы" type="number" size="2" name="amount" min="1" max="1000000"
                            value={{old('amount')?old('amount'):'200'}} step="0.5" required>
                 </div>
-                <div class="col-md-1"><p>Выбор даты</p>
+                <div class="col-md-1">
                     <input title="Выбор даты" name="datetime" type="datetime-local"
                            value="{{old('datetime')?old('datetime'):$date}}">
                 </div>
