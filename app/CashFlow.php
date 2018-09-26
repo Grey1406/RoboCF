@@ -38,8 +38,6 @@ class CashFlow extends Model
         {
             $cashFlow->status = CashFlow::$STATUS_APPROVED;
             $cashFlow->changed = Carbon::now();
-            Customer::ChangeBalance($cashFlow->id_sender,-$cashFlow->amount);
-            Customer::ChangeBalance($cashFlow->id_receiver,$cashFlow->amount);
             $cashFlow->save();
         }
     }
@@ -47,6 +45,7 @@ class CashFlow extends Model
     static public function GetCustomerCashFlow($id)
     {
         return $cashFlows = CashFlow::where('id_sender', $id)
+            ->orWhere('id_receiver', $id)
             ->get();
 
     }

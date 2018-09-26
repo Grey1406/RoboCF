@@ -23,23 +23,29 @@ class Customer extends Model
         return $Customer;
     }
 
-//* * * * * php /home/sergey/RoboCf make laravel-approve >> /dev/null 2>&1
 
     static public function GetAllCustomers()
     {
-//        CashFlow::ApproveWaiting(Carbon::now());
 
         $Customer = DB::select("select
                               cus.id,
                               cus.name,
-                              cus.balance - IFNULL(
-                                                      (
-                                                      SELECT SUM(cf.amount)
-                                                        FROM CashFlows AS cf
-                                                        WHERE cf.id_sender = cus.id
-                                                        AND cf.status='waiting'
-                                                      ),
-                                                  0)
+                              cus.balance 
+                              - IFNULL(
+                                  (
+                                  SELECT SUM(cf.amount)
+                                    FROM CashFlows AS cf
+                                    WHERE cf.id_sender = cus.id
+                                  ),
+                              0)
+                              + IFNULL(
+                                  (
+                                  SELECT SUM(cf.amount)
+                                    FROM CashFlows AS cf
+                                    WHERE cf.id_receiver = cus.id
+                                    AND cf.status='approved'
+                                  ),
+                              0)
                               AS `balance`,
                               (
                                 SELECT CONCAT(
@@ -68,8 +74,10 @@ class Customer extends Model
             ->first()->balance;
         $cashFlows = CashFlow::GetCustomerCashFlow($id);
         foreach ($cashFlows as $cashFlow) {
-            if ($cashFlow->status == CashFlow::$STATUS_WAITING) {
+            if ($cashFlow->id_sender==$id) {
                 $balance -= $cashFlow->amount;
+            } elseif ($cashFlow->status == CashFlow::$STATUS_APPROVED){
+                $balance += $cashFlow->amount;
             }
         }
         return $balance;
