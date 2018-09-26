@@ -29,26 +29,34 @@ class Customer extends Model
     {
 //        CashFlow::ApproveWaiting(Carbon::now());
 
-        $Customer = DB::select('select
+        $Customer = DB::select("select
                               cus.id,
                               cus.name,
-                              cus.balance,
+                              cus.balance - IFNULL(
+                                                      (
+                                                      SELECT SUM(cf.amount)
+                                                        FROM CashFlows AS cf
+                                                        WHERE cf.id_sender = cus.id
+                                                        AND cf.status='waiting'
+                                                      ),
+                                                  0)
+                              AS `balance`,
                               (
                                 SELECT CONCAT(
-                                    \'Отправитель \', cf.id_sender,
-                                    \' получатель \', cf.id_receiver,
-                                    \' статус \', cf.status,
-                                    \' сумма \', cf.amount,
-                                    \' создано \', cf.create,
-                                    \' изменено \', IFNULL(cf.changed,\'null\'),
-                                    \' запланировано \', cf.approved
+                                    'Отправитель ', cf.id_sender,
+                                    ' получатель ', cf.id_receiver,
+                                    ' статус ', cf.status,
+                                    ' сумма ', cf.amount,
+                                    ' создано ', cf.create,
+                                    ' изменено ', IFNULL(cf.changed,'null'),
+                                    ' запланировано ', cf.approved
                                 )
                                 FROM CashFlows AS cf
                                 WHERE cf.id_sender = cus.id
                                 ORDER BY cf.id DESC
                                 LIMIT 1
                               ) AS LastTransaction
-                              from Customers AS cus');
+                              from Customers AS cus");
 
 
         return $Customer;
@@ -56,18 +64,22 @@ class Customer extends Model
 
     static public function GetCustomerBalance($id)
     {
-        $balance=$Customer = Customer::where('id', $id)
+        $balance = $Customer = Customer::where('id', $id)
             ->first()->balance;
         $cashFlows = CashFlow::GetCustomerCashFlow($id);
-        foreach ($cashFlows as $cashFlow)
-            $balance-=$cashFlow->amount;
+        foreach ($cashFlows as $cashFlow) {
+            if ($cashFlow->status == CashFlow::$STATUS_WAITING) {
+                $balance -= $cashFlow->amount;
+            }
+        }
         return $balance;
     }
-    static public function ChangeBalance($id,$amount)
+
+    static public function ChangeBalance($id, $amount)
     {
         $Customer = Customer::where('id', $id)
             ->first();
-        $Customer->balance = $Customer->balance+$amount;
+        $Customer->balance = $Customer->balance + $amount;
         $Customer->save();
     }
 }
