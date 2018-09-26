@@ -116,8 +116,8 @@
             </div>
             <div class="row mt-3">
                 <div class="col-md-auto">
-                    <button type="submit" class="btn btn-default">
-                        <i class="fa fa-plus"></i> Перевести денежку
+                    <button type="submit" class="btn btn-default" name="button">
+                        <i class="fa fa-plus"></i>Перевести денежку
                     </button>
                 </div>
             </div>

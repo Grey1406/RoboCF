@@ -40,20 +40,39 @@ class CashFlowTest extends TestCase
         Customer::changeBalance($cus->id, 1277);
         $this->seeInDatabase('Customers', ['id' => $cus->id, 'balance' => 2277]);
     }
+
     public function testCreateNewCashFlow()
     {
         $cus1 = Customer::createNewCustomer('test1', 1000);
         $cus2 = Customer::createNewCustomer('test2', 1000);
-        $cashFlow=CashFlow::createNewCashFlow($cus1->id,$cus2->id,100,Carbon::now());
-        $this->seeInDatabase('CashFlows', ['id' => $cashFlow->id,'status'=>'waiting']);
+        $cashFlow = CashFlow::createNewCashFlow($cus1->id, $cus2->id, 100, Carbon::now());
+        $this->seeInDatabase('CashFlows', ['id' => $cashFlow->id, 'status' => 'waiting']);
     }
+
     public function testApproveWaiting()
     {
         $cus1 = Customer::createNewCustomer('test1', 1000);
         $cus2 = Customer::createNewCustomer('test2', 1000);
-        $cashFlow=CashFlow::createNewCashFlow($cus1->id,$cus2->id,100,Carbon::now());
+        $cashFlow = CashFlow::createNewCashFlow($cus1->id, $cus2->id, 100, Carbon::now());
         CashFlow::approveWaiting(Carbon::now()->addDay());
-        $this->seeInDatabase('CashFlows', ['id' => $cashFlow->id,'status'=>'approved']);
+        $this->seeInDatabase('CashFlows', ['id' => $cashFlow->id, 'status' => 'approved']);
+    }
+
+    public function testMainPage()
+    {
+        $cus1 = Customer::createNewCustomer('test3', 1000);
+        $cus2 = Customer::createNewCustomer('test4', 1000);
+
+        $this->visit('/');
+        $this->select($cus1->id, 'sender');
+        $this->select($cus2->id, 'receiver');
+        $this->type('500', 'amount');
+        $this->press('button');
+        $this->seePageIs('/');
+
+        $this->seeInDatabase('CashFlows', ['id_sender' => $cus1->id,'id_receiver' => $cus2->id, 'status' => 'waiting']);
+        CashFlow::approveWaiting(Carbon::now()->addDay());
+        $this->seeInDatabase('CashFlows', ['id_sender' => $cus1->id,'id_receiver' => $cus2->id, 'status' => 'approved']);
     }
 
 }
