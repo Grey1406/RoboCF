@@ -40,15 +40,15 @@ class MainController extends Controller
                 ->withErrors($validator);
         }
 
-        if(!Customer::find($request->sender)){
+        if (!Customer::find($request->sender)) {
             Session::flash('message-fail', 'пользователя с id '.$request->sender.' не существует');
             return redirect('/');
         }
-        if(!Customer::find($request->receiver)){
+        if (!Customer::find($request->receiver)) {
             Session::flash('message-fail', 'пользователя с id '.$request->receiver.' не существует');
             return redirect('/');
         }
-        
+
         $errorArray=[];
         try {
             $planedDate = Carbon::createFromFormat('Y-m-d\Th:i', $request->datetime);
