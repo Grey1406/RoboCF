@@ -37,8 +37,8 @@ class MainController extends Controller
                 ->withErrors($validator);
         }
 
-        $planedDate=Carbon::createFromFormat('Y-m-d\Th:i',$request->datetime);
-        CashFlow::createNewCashFlow($request->sender,$request->receiver,$request->amount,$planedDate);
+        $planedDate=Carbon::createFromFormat('Y-m-d\Th:i', $request->datetime);
+        CashFlow::createNewCashFlow($request->sender, $request->receiver, $request->amount, $planedDate);
 
         return redirect('/');
     }
