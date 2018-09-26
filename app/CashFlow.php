@@ -3,6 +3,8 @@
 namespace App;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -34,10 +36,18 @@ class CashFlow extends Model
         $cashFlows = CashFlow::where('status', 'waiting')
             ->where('approved', '<', $datetime)
             ->get();
-        foreach ($cashFlows as $cashFlow) {
-            $cashFlow->status = CashFlow::$STATUS_APPROVED;
-            $cashFlow->changed = Carbon::now();
-            $cashFlow->save();
+        $error=null;
+        try {
+            foreach ($cashFlows as $cashFlow) {
+                $cashFlow->status = CashFlow::$STATUS_APPROVED;
+                $cashFlow->changed = Carbon::now();
+                $error=$cashFlow;
+                $cashFlow->save();
+            }
+        } catch (\Exception $e) {
+//          storage/logs
+            Session::flash('message-fail', 'something go wrong :' . json_encode($error));
+            Log::warning('Произошла ошибка при сохранении проводки :'.json_encode($error));
         }
     }
 

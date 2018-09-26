@@ -16,9 +16,20 @@
 </div>
 <!-- Bootstrap шаблон... -->
 
-<div class="panel-body ml-5" >
+<div class="panel-body ml-5">
     <!-- Отображение ошибок проверки ввода -->
     @include('common.errors')
+
+    @if(session('message-success'))
+        <div class="row alert alert-success col-md-4">
+            {{session('message-success')}}
+        </div>
+    @endif
+    @if(session('message-fail'))
+        <div class="row alert alert-danger col-md-4">
+            {{session('message-fail')}}
+        </div>
+    @endif
 
     @if (count($customers) == 0)
         <div class="panel-heading">
